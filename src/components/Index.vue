@@ -1,6 +1,6 @@
 <template>
   <div id="base">
-    <Particles id="tsparticles" :options="{
+    <Particles id="space" :options="{
             background: {
                 color: {
                     value: '#000'
@@ -34,7 +34,7 @@
                       height: 300,
                       width: 300,
                       replace_color: true,
-                      src: 'bdk.png'
+                      src: require('@/assets/bdk.png')
                     },
                     type: 'image'
                 },
@@ -51,17 +51,7 @@
     <h1 class="mctext" style="font-size: 3em; font-weight: bold; margin-bottom: 0;">Bedrockk</h1>
     <p class="mctext">bedrock like rock</p>
     <div id="scene"></div>
-    <p class="mctext" style="margin-bottom: 30px; font-size: 1.5em">Recent Projects</p>
-    <div class="repo">
-      <p class="mctext" style="font-size: 1em">
-        <a v-bind:href='"https://github.com/bedrockk/" + name1' style="color: white;">{{ name1 }}</a>: {{ desc1 }}
-      </p>
-    </div>
-    <div class="repo">
-      <p class="mctext" style="font-size: 1em">
-        <a v-bind:href='"https://github.com/bedrockk/" + name2' style="color: white;">{{ name2 }}</a>: {{ desc2 }}
-      </p>
-    </div>
+    <p class="mctext" style="margin-bottom: 30px; font-size: 1.5em">Projects</p>
   </div>
 </template>
 
@@ -71,14 +61,6 @@ import Github from 'github-api'
 
 export default {
   name: 'Index',
-  data() {
-    return {
-      name1: 'unknown',
-      name2: 'unknown',
-      desc1: 'unknown',
-      desc2: 'unknown',
-    }
-  },
   methods: {
     init() {
       let base = document.getElementById('scene');
@@ -89,7 +71,7 @@ export default {
       this.scene = new Three.Scene();
 
       let geometry = new Three.BoxGeometry(0.5, 0.5, 0.5);
-      let texture = new Three.TextureLoader().load("bdk.png");
+      let texture = new Three.TextureLoader().load(require("@/assets/bdk.png"));
       let material = new Three.MeshBasicMaterial({map: texture});
 
       this.mesh = new Three.Mesh(geometry, material);
@@ -118,17 +100,26 @@ export default {
 
     const gh = new Github();
     const org = gh.getOrganization('bedrockk');
+    const base = document.getElementById('base');
 
     org.getRepos((err, list) => {
       if (err === null) {
-        if (list[0] !== null) {
-          this.name1 = list[0].name;
-          this.desc1 = list[0].description;
-        }
+        for(const repo of list) {
+          if (repo.name !== 'bedrockk.github.io'){
+            let div = document.createElement('div');
+            let p = document.createElement('p');
+            let a = document.createElement('a');
+            div.classList.add('repo');
+            p.classList.add('mctext');
+            a.href = 'https://github.com/bedrockk/' + repo.name;
+            a.innerText = repo.name;
+            a.style.color = 'white';
+            p.append(a);
+            p.append(' : ' + repo.description);
 
-        if (list[1] !== null) {
-          this.name2 = list[1].name;
-          this.desc2 = list[1].description;
+            div.append(p);
+            base.append(div);
+          }
         }
       }
     })
@@ -136,14 +127,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 #base {
   overflow: hidden;
   height: 100%;
   width: 100%;
 }
 
-#tsparticles {
+#space {
   position: fixed;
   width: 100%;
   height: 100%;
