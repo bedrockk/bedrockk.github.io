@@ -1,3 +1,3 @@
 module.exports = {
-    publicPath: '/bedrockk/'
+    publicPath: '/bedrockk.github.io/'
 }
