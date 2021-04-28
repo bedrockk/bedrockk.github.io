@@ -152,8 +152,9 @@ export default {
 .repo {
   height: auto;
   width: auto;
+  max-width: 50%;
   border: 5px solid white;
-  margin: 20px 20px 20px 20px;
+  margin: 20px auto 20px auto;
   z-index: -1;
 }
 
